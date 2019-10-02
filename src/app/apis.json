@@ -1,0 +1,4 @@
+{
+  "oauth": "http://localhost:8888/v2/api-docs",
+  "employees": "http://localhost:8080/v2/api-docs"
+}

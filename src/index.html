@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    {{{title}}}
+    {{{meta}}}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href=".static/favicon.ico" alt="favicon de tarjeta cencosud">
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Tarjetas Cencosud" />
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146723022-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-146723022-1');
+      gtag('config', 'UA-146723022-1', { 'optimize_id': 'GTM-K6B8R55'});
+    </script>
+</head>
+
+<body>
+    <div id="app">{{{reactDom}}}</div>
+    <script defer>
+        window.REDUX_DATA = {{{reduxState}}}
+    </script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+
+node_modules
+dist
+
+.idea/*
+.scannerwork
+package-lock.json
+output/
+src/**/__snapshots__/
+/npm-debug.log

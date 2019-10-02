@@ -1,0 +1,10 @@
+@import '../../variables';
+
+.landing {
+  margin: 0 0 0 0;
+  background: $ligth-gray;
+  height: 100%;
+  width: 100%;
+}
+
+@import '~swagger-ui/dist/swagger-ui.css';
