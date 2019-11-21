@@ -8,11 +8,9 @@ import { isLogged, security } from 'middleware-login-library';
 import React from "react";
 import { renderToString } from "react-dom/server";
 import { StaticRouter, matchPath } from "react-router-dom";
-import { Provider as ReduxProvider } from "react-redux";
 import Helmet from "react-helmet";
 import routes from "./app/routes";
 import Layout from "./app/components/Layout";
-import createStore from "./app/store";
 import api from "./api/index";
 import mustacheExpress from 'mustache-express';
 
@@ -37,7 +35,6 @@ app.use(`${APP_CONTEXT_PATH}/api`, api);
 
 app.get('*', (req, res) => {
     const context = {};
-    const store = createStore({session: { isLogged: isLogged(req) }});
     const dataRequirements =
         routes
             .filter(route => matchPath(req.url, route)) // filter matching paths
@@ -47,17 +44,13 @@ app.get('*', (req, res) => {
 
     Promise.all(dataRequirements).then(() => {
         const jsx = (
-            <ReduxProvider store={store}>
                 <StaticRouter context={context} location={req.url}>
                     <Layout />
                 </StaticRouter>
-            </ReduxProvider>
         );
         const reactDom = renderToString(jsx);
-        const reduxState = store.getState();
         const helmetData = Helmet.renderStatic();
          res.render(`index.html`, {
-          reduxState: JSON.stringify(reduxState),
           reactDom: reactDom, title: helmetData.title.toString(),
           meta: helmetData.meta.toString()
         })

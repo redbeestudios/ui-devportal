@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { connect } from "react-redux";
 
 class Header extends React.Component {
 
@@ -79,6 +78,4 @@ class Header extends React.Component {
   getProfile(){ return this.props.isLogged ? <img className={`header__brand__user ${this.state.isMenuOpen?'header__brand__user--opened':''}`} src="/static/profile.jpg" alt="brand" onClick={this.toggleMenu}/> : null }
 }
 
-const mapStateToProps = (state) => ({ isLogged: state.session.isLogged });
-
-export default connect(mapStateToProps)(Header);
+export default Header;
