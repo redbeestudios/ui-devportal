@@ -9,12 +9,21 @@
  const webpack = require('webpack');
  const nodeExternals = require('webpack-node-externals');
  const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
  const dev = process.env.NODE_ENV !== "production";
+ const dotenv = require('dotenv');
+
+
+ const env = dev?dotenv.config({path: `${path.join(__dirname)}/.env.development`}).parsed:dotenv.config().parsed
+ const envKeys = Object.keys(env).reduce((prev, next) => {
+   prev[`process.env.${next}`] = JSON.stringify(env[next]);
+   return prev;
+ }, {});
 
  module.exports = (env, argv) => {
 
    return ({
-     mode: dev?'development':'production',
+     mode: 'production',
      devtool: dev?'source-map':'none',
      entry: {
        server: './index.js',
@@ -43,8 +52,28 @@
            use: {
              loader: "babel-loader"
            }
-         }
+         },
+         {
+            test: /\.s[ac]ss$/i,
+            use: [
+              // Creates `style` nodes from JS strings
+              MiniCssExtractPlugin.loader,
+              // Translates CSS into CommonJS
+              'css-loader',
+              // Compiles Sass to CSS
+              'sass-loader',
+            ],
+          }
        ]
-     }
+     },
+     plugins: [
+    new MiniCssExtractPlugin({
+      // Options similar to the same options in webpackOptions.output
+      // both options are optional
+      filename: '[name].css',
+      chunkFilename: '[id].css',
+    }),
+    new webpack.DefinePlugin(envKeys),
+  ],
    })
  }

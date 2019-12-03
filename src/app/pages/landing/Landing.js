@@ -1,25 +1,21 @@
 import React, { Component } from "react";
-import Helmet from "react-helmet";
-import Header from "./../../components/Header";
-import Footer from "./../../components/Footer";
-import apis from './../../apis.json';
+import { fetchSpecs } from './../../stores/specs';
+import Content from './../../components/Content';
+import { connect } from 'react-redux';
 
-class Landing extends Component{
-    constructor(props){
-        super(props);
-    }
-
-    render(){
-        return(
-            <div className='landing'>
-                <Header />
-                  <ul>
-                  { Object.keys(apis).map( it =>  <li><a href={`/specs/${it}`}>{it}</a></li>) }
-                  </ul>
-                <Footer />
-            </div>
-        )
-    }
+const Landing = ({match, specs}) => {
+  let {params} = match;
+  return(
+      <div className='landing'>
+        <Content id={params.id?params.id:specs[0].id}/>
+      </div>
+  )
 }
 
-export default Landing;
+Landing.serverFetch = fetchSpecs;
+
+const mapStateToProps = (state) => ({
+  specs: state.specs
+})
+
+export default connect(mapStateToProps, null)(Landing);

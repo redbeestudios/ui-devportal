@@ -1,23 +1,22 @@
 import React from "react";
-import { connect } from "react-redux";
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux'
 
-class Menu extends React.Component {
+import './Menu.scss';
 
-  constructor(props) {
-    super(props);
-    this.state = { open: false }
-  }
-
-  render() {
-    return (
-      <div className={`menu ${this.state.open?'menu--open':''}`}>
-        <img src='/static/profile.jpg' className='menu__profile' alt="profile" onClick={()=> this.setState({open:!this.state.open})}/>
-        <div className='menu__aside'></div>
-      </div>
-    )
-  }
+const Menu = ({specs}) => {
+  return (
+    <div className='menu'>
+      <span className='menu__title'>Recursos de la API</span>
+      <ul className='menu__items'>
+        { specs.map((it, index) => <li className='items__item' key={index}><Link to={`spec/${it.id}`}>{it.label}</Link></li>)  }
+      </ul>
+    </div>
+  )
 }
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({
+    specs: state.specs
+});
 
 export default connect(mapStateToProps)(Menu);

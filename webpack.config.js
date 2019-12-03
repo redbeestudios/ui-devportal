@@ -4,7 +4,6 @@ const { BundleAnalyzerPlugin } = require( "webpack-bundle-analyzer" );
 const webpack = require('webpack');
 const dotenv = require('dotenv');
 
-const FriendlyErrorsWebpackPlugin = require( "friendly-errors-webpack-plugin" );
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const LiveReloadPlugin = require('webpack-livereload-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -20,7 +19,6 @@ const envKeys = Object.keys(env).reduce((prev, next) => {
 const APP_CONTEXT_PATH = process.env.APP_CONTEXT_PATH ? process.env.APP_CONTEXT_PATH : ''
 
 const plugins = [
-    new FriendlyErrorsWebpackPlugin(),
     new MiniCssExtractPlugin({
       filename: '[name].[hash].css',
       chunkFilename: '[id].css',
@@ -41,7 +39,7 @@ if ( !dev ) {
         openAnalyzer: false,
     } ) );
 } else {
-    plugins.push(new CleanWebpackPlugin());
+    //plugins.push(new CleanWebpackPlugin());
 }
 
 module.exports = {
@@ -119,6 +117,10 @@ module.exports = {
                 use: [
                 'file-loader'
                 ]
+            },
+            {
+              test: /\.json$/,
+              loader: 'json-loader'
             }
         ],
     },

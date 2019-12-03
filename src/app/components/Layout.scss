@@ -1,8 +1,7 @@
-@import "Header";
-@import "Menu";
-@import "Footer";
+@import './../variables';
 
-.content {
-  height: 100%;
+.app__content {
   width: 100%;
+
+  background: $white;
 }

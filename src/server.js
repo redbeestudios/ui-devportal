@@ -1,15 +1,14 @@
 import express from "express";
 import path from "path";
 import compression from 'compression';
-import cookieParser from 'cookie-parser';
-import bodyParser from 'body-parser';
 
-import { isLogged, security } from 'middleware-login-library';
 import React from "react";
 import { renderToString } from "react-dom/server";
 import { StaticRouter, matchPath } from "react-router-dom";
-import Helmet from "react-helmet";
+import { Provider as ReduxProvider } from "react-redux";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import routes from "./app/routes";
+import createStore from "./app/store";
 import Layout from "./app/components/Layout";
 import api from "./api/index";
 import mustacheExpress from 'mustache-express';
@@ -23,10 +22,7 @@ const app = express();
 app.engine('html', mustacheExpress());
 app.set('view engine', 'html');
 app.set('views', path.resolve(__dirname, "../dist"));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(compression());
-app.use(cookieParser());
 
 app.use(`${APP_CONTEXT_PATH}/static`,express.static(path.resolve(__dirname, "../dist")));
 app.use(`${APP_CONTEXT_PATH}/static`,express.static(path.resolve(__dirname, "../public")));
@@ -35,6 +31,9 @@ app.use(`${APP_CONTEXT_PATH}/api`, api);
 
 app.get('*', (req, res) => {
     const context = {};
+    const store = createStore();
+
+    const helmetContext = {};
     const dataRequirements =
         routes
             .filter(route => matchPath(req.url, route)) // filter matching paths
@@ -44,15 +43,24 @@ app.get('*', (req, res) => {
 
     Promise.all(dataRequirements).then(() => {
         const jsx = (
+            <HelmetProvider context={helmetContext}>
+              <Helmet>
+                <title>Developer portal ApiCore</title>
+              </Helmet>
+              <ReduxProvider store={store}>
                 <StaticRouter context={context} location={req.url}>
                     <Layout />
                 </StaticRouter>
+              </ReduxProvider>
+            </HelmetProvider>
         );
         const reactDom = renderToString(jsx);
-        const helmetData = Helmet.renderStatic();
+        const reduxState = store.getState();
+        const { helmet } = helmetContext;
          res.render(`index.html`, {
-          reactDom: reactDom, title: helmetData.title.toString(),
-          meta: helmetData.meta.toString()
+          reduxState: JSON.stringify(reduxState),
+          reactDom: reactDom, title: helmet.title.toString(),
+          meta: helmet.meta.toString()
         })
     } );
 } );

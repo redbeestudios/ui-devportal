@@ -1,15 +1,16 @@
-import Spec from "./pages/spec/Spec";
+import React from 'react';
+import {Redirect} from 'react-router-dom';
 import Landing from "./pages/landing/Landing";
 
 export default [
     {
-        path: "/",
-        component: Landing,
-        exact: true,
+      path: '/specs/:id?',
+      component: Landing,
+      exact: false
     },
     {
-        path: "/specs/:id",
-        component: Spec,
-        exact: true,
+      path: "/",
+      component: Landing,
+      exact: true,
     }
 ];

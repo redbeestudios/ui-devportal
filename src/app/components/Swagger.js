@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+import './Swagger.scss'
+
 class SwaggerUI extends Component {
 
     componentDidMount() {

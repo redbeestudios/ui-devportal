@@ -1,6 +1,8 @@
+require("babel-polyfill");
 require("@babel/register")( {
     presets: [ "@babel/preset-env" ],
 } );
+
 const path = require('path');
 const dev = process.env.NODE_ENV !== "production";
 const dotenv = require('dotenv');
