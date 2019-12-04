@@ -1,0 +1,78 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ui-devportal
+  namespace: openapi
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ui-devportal
+    spec:
+      containers:
+      - name: ui-devportal
+        image: registryrfsc.azurecr.io/ui-devportal:0.0.1-rc
+        imagePullPolicy: Always
+        env:
+          - name: "LOGSTASH_URL"
+            value: "logstash.elk.svc.cluster.local:5000"
+        ports:
+        - name: http
+          containerPort: 8080
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "0.2"
+          limits:
+            memory: "1024Mi"
+            cpu: "0.5"
+        livenessProbe:
+          httpGet:
+            port: http
+            path: /health
+          initialDelaySeconds: 180
+          periodSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            port: http
+            path: /health
+          initialDelaySeconds: 180
+          periodSeconds: 1
+          failureThreshold: 30
+      imagePullSecrets:
+      - name: regcred
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: devportal-db
+  namespace: openapi
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:latest
+        env:
+        - name: MYSQL_DATABASE
+          value: devportal
+        - name: MYSQL_USER
+          value: devportaluser
+        - name: MYSQL_PASSWORD
+          value: somepassword
+        - name: MYSQL_ROOT_PASSWORD
+          value: root
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: mysql-data
+      volumes:
+      - name: mysql-data
+        emptyDir: {}

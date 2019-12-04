@@ -29,6 +29,8 @@ app.use(`${APP_CONTEXT_PATH}/static`,express.static(path.resolve(__dirname, "../
 
 app.use(`${APP_CONTEXT_PATH}/api`, api);
 
+app.get(`/health`, (req, res) => res.status(200).json({health: 'UP'}));
+
 app.get('*', (req, res) => {
     const context = {};
     const store = createStore();
